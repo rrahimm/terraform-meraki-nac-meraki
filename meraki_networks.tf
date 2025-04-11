@@ -165,6 +165,17 @@ locals {
         for network in try(organization.networks, []) : {
           network_id = meraki_network.network["${organization.name}/${network.name}"].id
           serials    = [for d in network.devices : d.serial]
+          details_by_device = [
+            for d in network.devices : {
+              serial = d.serial
+              details = [
+                {
+                  name  = "device mode"
+                  value = "managed"
+                }
+              ]
+            }
+          ]
         } if try(network.devices, null) != null
       ] if try(domain.organizations, null) != null
     ] if try(local.meraki.domains, null) != null
@@ -172,9 +183,10 @@ locals {
 }
 
 resource "meraki_network_device_claim" "net_device_claim" {
-  for_each   = { for i, v in local.networks_devices_claim : i => v }
-  network_id = each.value.network_id
-  serials    = each.value.serials
+  for_each          = { for i, v in local.networks_devices_claim : i => v }
+  network_id        = each.value.network_id
+  serials           = each.value.serials
+  details_by_device = each.value.details_by_device
 }
 
 locals {
