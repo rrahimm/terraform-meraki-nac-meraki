@@ -962,5 +962,5 @@ resource "meraki_wireless_ssid_schedules" "example" {
       "start_day": "saturday",
       "start_time": "14:00:00"
     }
-  ],
+  ]
 }
