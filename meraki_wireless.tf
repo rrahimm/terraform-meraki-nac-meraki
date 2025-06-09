@@ -663,6 +663,7 @@ resource "meraki_wireless_ssid_schedules" "networks_wireless_ssids_schedules" {
   number            = each.value.number
   enabled           = each.value.enabled
   ranges            = each.value.ranges
+  ranges_in_seconds = try(each.value.ranges_in_seconds, null)
   depends_on = [
     meraki_wireless_ssid.networks_wireless_ssids
   ]
@@ -912,25 +913,5 @@ resource "meraki_wireless_network_bluetooth_settings" "networks_wireless_bluetoo
   minor                       = each.value.minor
   depends_on = [
     meraki_wireless_ssid.networks_wireless_ssids
-  ]
-}
-
-resource "meraki_wireless_ssid_schedules" "example1" {
-  network_id = "L_762234236932476396"
-  number     = "2"
-  enabled    = true
-  ranges = [
-    {
-      end_day    = "Sunday"
-      end_time   = "06:00:00"
-      start_day  = "Sunday"
-      start_time = "02:00:00"
-    },
-    {
-      end_day    = "Tuesday"
-      end_time   = "05:00:00"
-      start_day  = "Tuesday"
-      start_time = "01:00:00"
-    },
   ]
 }
