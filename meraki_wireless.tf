@@ -921,15 +921,15 @@ resource "meraki_wireless_ssid_schedules" "example1" {
   enabled    = true
   ranges = [
     {
-      "end_day": "sunday",
+      "end_day": "Sunday",
       "end_time": "09:00:00",
-      "start_day": "sunday",
+      "start_day": "Sunday",
       "start_time": "08:00:00"
     },
     {
-      "end_day": "monday",
+      "end_day": "Monday",
       "end_time": "10:00:00",
-      "start_day": "monday",
+      "start_day": "Monday",
       "start_time": "09:00:00"
     }
   ]
