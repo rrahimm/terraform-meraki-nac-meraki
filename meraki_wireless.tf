@@ -925,6 +925,12 @@ resource "meraki_wireless_ssid_schedules" "example1" {
       end_time   = "05:00"
       start_day  = "Tuesday"
       start_time = "01:00"
-    }
+    },
+    {
+      end_day    = "Sunday"
+      end_time   = "06:00"
+      start_day  = "Sunday"
+      start_time = "02:00"
+    },
   ]
 }
