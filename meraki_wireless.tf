@@ -914,3 +914,17 @@ resource "meraki_wireless_network_bluetooth_settings" "networks_wireless_bluetoo
     meraki_wireless_ssid.networks_wireless_ssids
   ]
 }
+
+resource "meraki_wireless_ssid_schedules" "example1" {
+  network_id = "L_762234236932476396"
+  number     = "2"
+  enabled    = true
+  ranges = [
+    {
+      end_day    = "Tuesday"
+      end_time   = "05:00:00"
+      start_day  = "Tuesday"
+      start_time = "01:00:00"
+    }
+  ]
+}
