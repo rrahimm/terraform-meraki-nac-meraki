@@ -922,9 +922,9 @@ resource "meraki_wireless_ssid_schedules" "example1" {
   ranges = [
     {
       end_day    = "Tuesday"
-      end_time   = "05:00:00"
+      end_time   = "05:00"
       start_day  = "Tuesday"
-      start_time = "01:00:00"
+      start_time = "01:00"
     }
   ]
 }
