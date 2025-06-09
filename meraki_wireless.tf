@@ -915,7 +915,7 @@ resource "meraki_wireless_network_bluetooth_settings" "networks_wireless_bluetoo
   ]
 }
 
-resource "meraki_wireless_ssid_schedules" "example" {
+resource "meraki_wireless_ssid_schedules" "example1" {
   network_id = "L_762234236932476396"
   number     = "2"
   enabled    = true
@@ -931,37 +931,6 @@ resource "meraki_wireless_ssid_schedules" "example" {
       "end_time": "10:00:00",
       "start_day": "monday",
       "start_time": "09:00:00"
-    },
-    {
-      "end_day": "tuesday",
-      "end_time": "11:00:00",
-      "start_day": "tuesday",
-      "start_time": "10:00:00"
-    },
-    {
-      "end_day": "wednesday",
-      "end_time": "12:00:00",
-      "start_day": "wednesday",
-      "start_time": "11:00:00"
-    },
-    {
-      "end_day": "thursday",
-      "end_time": "13:00:00",
-      "start_day": "thursday",
-      "start_time": "12:00:00"
-    },
-    {
-      "end_day": "friday",
-      "end_time": "14:00:00",
-      "start_day": "friday",
-      "start_time": "13:00:00"
-    },
-    {
-      "end_day": "saturday",
-      "end_time": "16:00:00",
-      "start_day": "saturday",
-      "start_time": "14:00:00"
     }
   ]
-  ranges_in_seconds  =  null
 }
