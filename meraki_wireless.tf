@@ -963,5 +963,5 @@ resource "meraki_wireless_ssid_schedules" "example" {
       "start_time": "14:00:00"
     }
   ]
-  ranges_in_seconds: null
+  ranges_in_seconds  =  null
 }
