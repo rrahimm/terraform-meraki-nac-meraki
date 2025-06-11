@@ -1144,3 +1144,7 @@ resource "meraki_appliance_connectivity_monitoring_destinations" "networks_appli
   network_id   = each.value.network_id
   destinations = each.value.destinations
 }
+
+data "meraki_appliance_vpn_bgp" "example" {
+  network_id = "L_762234236932476396"
+}
