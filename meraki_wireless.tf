@@ -662,7 +662,7 @@ resource "meraki_wireless_ssid_schedules" "networks_wireless_ssids_schedules" {
   network_id        = each.value.network_id
   number            = each.value.number
   enabled           = each.value.enabled
-  ranges            = each.value.ranges
+  ranges            = try(each.value.ranges, local.defaults.meraki.domains.organizations.networks.wireless.ssids.schedules.ranges, null)
   ranges_in_seconds = each.value.ranges_in_seconds
   depends_on = [
     meraki_wireless_ssid.networks_wireless_ssids
