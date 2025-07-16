@@ -7,8 +7,7 @@ defaults:
             ssids:
               schedules:
                 enabled: true
-                ranges:
-                  - start_day: "Sunday"
-                    start_time: "03:15:00"
-                    end_day: "Tuesday"
-                    end_time: "06:15:00"
+                start_day: "Sunday"
+                start_time: "03:15:00"
+                end_day: "Tuesday"
+                end_time: "06:15:00"
