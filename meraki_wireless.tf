@@ -650,7 +650,7 @@ locals {
                 end   = try(ranges_in_second.end, local.defaults.meraki.domains.organizations.networks.wireless.ssids.schedules.ranges_in_seconds.end, null)
               }
             ]
-          } if try(wireless_ssid.schedules, null) != null
+          } if try(wireless_ssid.schedules, local.defaults.meraki.domains.organizations.networks.wireless.ssids.schedules, null) != null
         ]
       ]
     ]
