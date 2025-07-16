@@ -636,8 +636,8 @@ locals {
             network_id = meraki_network.organizations_networks[format("%s/%s/%s", domain.name, organization.name, network.name)].id
             number     = meraki_wireless_ssid.networks_wireless_ssids[format("%s/%s/%s/%s", domain.name, organization.name, network.name, wireless_ssid.name)].number
             enabled    = try(wireless_ssid.schedules.enabled, local.defaults.meraki.domains.organizations.networks.wireless.ssids.schedules.enabled, null)
-            ranges = try(length(wireless_ssid.schedules.ranges) == 0, true) ? null : [
-              for range in try(wireless_ssid.schedules.ranges, []) : {
+            ranges = try(length(try(wireless_ssid.schedules.ranges,local.defaults.meraki.domains.organizations.networks.wireless.ssids.schedules.ranges)) == 0, true) ? null : [
+              for range in try(wireless_ssid.schedules.ranges, ["default"], []) : {
                 start_day  = try(range.start_day, local.defaults.meraki.domains.organizations.networks.wireless.ssids.schedules.ranges.start_day, null)
                 start_time = try(range.start_time, local.defaults.meraki.domains.organizations.networks.wireless.ssids.schedules.ranges.start_time, null)
                 end_day    = try(range.end_day, local.defaults.meraki.domains.organizations.networks.wireless.ssids.schedules.ranges.end_day, null)
