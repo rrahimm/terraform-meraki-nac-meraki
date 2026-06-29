@@ -16,16 +16,20 @@ locals {
           products_switch_catalyst_next_upgrade_time          = try(network.firmware.upgrade.products.switch_catalyst.next_upgrade.local_time, local.defaults.meraki.domains.organizations.networks.firmware.upgrade.products.switch_catalyst.next_upgrade.local_time, null)
           products_switch_catalyst_next_upgrade_to_version_id = try(network.firmware.upgrade.products.switch_catalyst.next_upgrade.to_version, local.defaults.meraki.domains.organizations.networks.firmware.upgrade.products.switch_catalyst.next_upgrade.to_version, null)
 
-          products_wireless_next_upgrade_time                = try(network.firmware.upgrade.products.wireless.next_upgrade.local_time, local.defaults.meraki.domains.organizations.networks.firmware.upgrade.products.wireless.next_upgrade.local_time, null)
-          products_wireless_next_upgrade_to_version_id       = try(network.firmware.upgrade.products.wireless.next_upgrade.to_version, local.defaults.meraki.domains.organizations.networks.firmware.upgrade.products.wireless.next_upgrade.to_version, null)
-          products_wireless_next_upgrade_prepare_for_upgrade = try(network.firmware.upgrade.products.wireless.next_upgrade.pre_download, local.defaults.meraki.domains.organizations.networks.firmware.upgrade.products.wireless.next_upgrade.pre_download, null)
+          products_wireless_next_upgrade_time          = try(network.firmware.upgrade.products.wireless.next_upgrade.local_time, local.defaults.meraki.domains.organizations.networks.firmware.upgrade.products.wireless.next_upgrade.local_time, null)
+          products_wireless_next_upgrade_to_version_id = try(network.firmware.upgrade.products.wireless.next_upgrade.to_version, local.defaults.meraki.domains.organizations.networks.firmware.upgrade.products.wireless.next_upgrade.to_version, null)
+          # products_wireless_next_upgrade_prepare_for_upgrade = try(network.firmware.upgrade.products.wireless.next_upgrade.pre_download, local.defaults.meraki.domains.organizations.networks.firmware.upgrade.products.wireless.next_upgrade.pre_download, null)
 
           products_appliance_next_upgrade_time          = try(network.firmware.upgrade.products.appliance.next_upgrade.local_time, local.defaults.meraki.domains.organizations.networks.firmware.upgrade.products.appliance.next_upgrade.local_time, null)
           products_appliance_next_upgrade_to_version_id = try(network.firmware.upgrade.products.appliance.next_upgrade.to_version, local.defaults.meraki.domains.organizations.networks.firmware.upgrade.products.appliance.next_upgrade.to_version, null)
 
           products_cellular_gateway_next_upgrade_time          = try(network.firmware.upgrade.products.cellular_gateway.next_upgrade.local_time, local.defaults.meraki.domains.organizations.networks.firmware.upgrade.products.cellular_gateway.next_upgrade.local_time, null)
           products_cellular_gateway_next_upgrade_to_version_id = try(network.firmware.upgrade.products.cellular_gateway.next_upgrade.to_version, local.defaults.meraki.domains.organizations.networks.firmware.upgrade.products.cellular_gateway.next_upgrade.to_version, null)
-        } if try(network.firmware, null) != null
+          } if(
+          try(network.firmware.timezone, null) != null ||
+          try(network.firmware.automatic_upgrade_window, null) != null ||
+          try(network.firmware.upgrade, null) != null
+        )
       ]
     ]
   ])
@@ -45,9 +49,9 @@ resource "meraki_network_firmware_upgrades" "networks_firmware_upgrades" {
   products_switch_catalyst_next_upgrade_time          = each.value.products_switch_catalyst_next_upgrade_time
   products_switch_catalyst_next_upgrade_to_version_id = each.value.products_switch_catalyst_next_upgrade_to_version_id
 
-  products_wireless_next_upgrade_time                = each.value.products_wireless_next_upgrade_time
-  products_wireless_next_upgrade_to_version_id       = each.value.products_wireless_next_upgrade_to_version_id
-  products_wireless_next_upgrade_prepare_for_upgrade = each.value.products_wireless_next_upgrade_prepare_for_upgrade
+  products_wireless_next_upgrade_time          = each.value.products_wireless_next_upgrade_time
+  products_wireless_next_upgrade_to_version_id = each.value.products_wireless_next_upgrade_to_version_id
+  # products_wireless_next_upgrade_prepare_for_upgrade = each.value.products_wireless_next_upgrade_prepare_for_upgrade
 
   products_appliance_next_upgrade_time          = each.value.products_appliance_next_upgrade_time
   products_appliance_next_upgrade_to_version_id = each.value.products_appliance_next_upgrade_to_version_id
