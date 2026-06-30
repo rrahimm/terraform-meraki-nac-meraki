@@ -25,7 +25,11 @@ locals {
 
           products_cellular_gateway_next_upgrade_time          = try(network.firmware.upgrade.products.cellular_gateway.next_upgrade.local_time, local.defaults.meraki.domains.organizations.networks.firmware.upgrade.products.cellular_gateway.next_upgrade.local_time, null)
           products_cellular_gateway_next_upgrade_to_version_id = try(network.firmware.upgrade.products.cellular_gateway.next_upgrade.to_version, local.defaults.meraki.domains.organizations.networks.firmware.upgrade.products.cellular_gateway.next_upgrade.to_version, null)
-        } if try(network.firmware, null) != null
+          } if(
+          try(network.firmware.timezone, null) != null ||
+          try(network.firmware.automatic_upgrade_window, null) != null ||
+          try(network.firmware.upgrade, null) != null
+        )
       ]
     ]
   ])
