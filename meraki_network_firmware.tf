@@ -41,6 +41,10 @@ locals {
         for v in data.meraki_network_firmware_upgrades_data.networks_firmware_data[cfg.key].products_cellular_gateway_available_versions :
         v.short_name => v.id
       }, {})
+      switch_catalyst = try({
+        for v in data.meraki_network_firmware_upgrades_data.networks_firmware_data[cfg.key].products_switch_catalyst_available_versions :
+        v.short_name => v.id
+      }, {})
     }
   }
 }
@@ -66,15 +70,18 @@ locals {
 
           products_switch_catalyst_participate_in_next_beta_release = try(network.firmware.upgrade.products.switch_catalyst.participate_in_next_beta_release, local.defaults.meraki.domains.organizations.networks.firmware.upgrade.products.switch_catalyst.participate_in_next_beta_release, null)
           products_switch_catalyst_next_upgrade_time                = try(network.firmware.upgrade.products.switch_catalyst.next_upgrade.local_time, local.defaults.meraki.domains.organizations.networks.firmware.upgrade.products.switch_catalyst.next_upgrade.local_time, null)
-          products_switch_catalyst_next_upgrade_to_version_id       = try(network.firmware.upgrade.products.switch_catalyst.next_upgrade.to_version, local.defaults.meraki.domains.organizations.networks.firmware.upgrade.products.switch_catalyst.next_upgrade.to_version, null)
+          products_switch_catalyst_next_upgrade_to_version_id = try(
+            local.networks_firmware_version_maps[format("%s/%s/%s", domain.name, organization.name, network.name)].switch_catalyst[try(network.firmware.upgrade.products.switch_catalyst.next_upgrade.to_version, local.defaults.meraki.domains.organizations.networks.firmware.upgrade.products.switch_catalyst.next_upgrade.to_version, "")],
+            try(network.firmware.upgrade.products.switch_catalyst.next_upgrade.to_version, local.defaults.meraki.domains.organizations.networks.firmware.upgrade.products.switch_catalyst.next_upgrade.to_version, null)
+          )
 
           products_wireless_participate_in_next_beta_release = try(network.firmware.upgrade.products.wireless.participate_in_next_beta_release, local.defaults.meraki.domains.organizations.networks.firmware.upgrade.products.wireless.participate_in_next_beta_release, null)
           products_wireless_next_upgrade_time                = try(network.firmware.upgrade.products.wireless.next_upgrade.local_time, local.defaults.meraki.domains.organizations.networks.firmware.upgrade.products.wireless.next_upgrade.local_time, null)
+          products_wireless_next_upgrade_predownload_enabled = try(network.firmware.upgrade.products.wireless.next_upgrade.pre_download, local.defaults.meraki.domains.organizations.networks.firmware.upgrade.products.wireless.next_upgrade.pre_download, null)
           products_wireless_next_upgrade_to_version_id = try(
             local.networks_firmware_version_maps[format("%s/%s/%s", domain.name, organization.name, network.name)].wireless[try(network.firmware.upgrade.products.wireless.next_upgrade.to_version, local.defaults.meraki.domains.organizations.networks.firmware.upgrade.products.wireless.next_upgrade.to_version, "")],
             try(network.firmware.upgrade.products.wireless.next_upgrade.to_version, local.defaults.meraki.domains.organizations.networks.firmware.upgrade.products.wireless.next_upgrade.to_version, null)
           )
-          # products_wireless_next_upgrade_prepare_for_upgrade = try(network.firmware.upgrade.products.wireless.next_upgrade.pre_download, local.defaults.meraki.domains.organizations.networks.firmware.upgrade.products.wireless.next_upgrade.pre_download, null)
 
           products_appliance_participate_in_next_beta_release = try(network.firmware.upgrade.products.appliance.participate_in_next_beta_release, local.defaults.meraki.domains.organizations.networks.firmware.upgrade.products.appliance.participate_in_next_beta_release, null)
           products_appliance_next_upgrade_time                = try(network.firmware.upgrade.products.appliance.next_upgrade.local_time, local.defaults.meraki.domains.organizations.networks.firmware.upgrade.products.appliance.next_upgrade.local_time, null)
@@ -117,6 +124,7 @@ resource "meraki_network_firmware_upgrades" "networks_firmware_upgrades" {
 
   products_wireless_participate_in_next_beta_release = each.value.products_wireless_participate_in_next_beta_release
   products_wireless_next_upgrade_time                = each.value.products_wireless_next_upgrade_time
+  products_wireless_next_upgrade_predownload_enabled = each.value.products_wireless_next_upgrade_predownload_enabled
   products_wireless_next_upgrade_to_version_id       = each.value.products_wireless_next_upgrade_to_version_id
 
   products_appliance_participate_in_next_beta_release = each.value.products_appliance_participate_in_next_beta_release
@@ -147,13 +155,14 @@ locals {
             to_version_id = try(
               local.networks_firmware_version_maps[format("%s/%s/%s", domain.name, organization.name, network.name)][{
                 switch          = "switch"
-                switchCatalyst  = "switch"
+                switchCatalyst  = "switch_catalyst"
                 wireless        = "wireless"
                 appliance       = "appliance"
                 cellularGateway = "cellular_gateway"
               }[product]][try(product_cfg.next_downgrade.to_version, "")],
               try(product_cfg.next_downgrade.to_version, null)
             )
+            predownload_enabled = product == "wireless" ? try(product_cfg.next_downgrade.pre_download, local.defaults.meraki.domains.organizations.networks.firmware.downgrade.products.wireless.next_downgrade.pre_download, null) : null
             reasons = try(product_cfg.next_downgrade.reasons, null) == null ? null : [
               for reason in try(product_cfg.next_downgrade.reasons, []) : {
                 category = try(reason.category, null)
@@ -168,10 +177,11 @@ locals {
 }
 
 resource "meraki_network_firmware_upgrades_rollback" "networks_firmware_rollbacks" {
-  for_each      = { for v in local.networks_firmware_rollbacks : v.key => v }
-  network_id    = each.value.network_id
-  product       = each.value.product
-  time          = each.value.time
-  to_version_id = each.value.to_version_id
-  reasons       = each.value.reasons
+  for_each            = { for v in local.networks_firmware_rollbacks : v.key => v }
+  network_id          = each.value.network_id
+  product             = each.value.product
+  time                = each.value.time
+  to_version_id       = each.value.to_version_id
+  predownload_enabled = each.value.predownload_enabled
+  reasons             = each.value.reasons
 }
