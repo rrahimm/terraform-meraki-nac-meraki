@@ -8,7 +8,8 @@ locals {
           network_id = local.organizations_network_ids[format("%s/%s/%s", domain.name, organization.name, network.name)]
           } if(
           try(network.firmware.automatic_upgrade_window, null) != null ||
-          try(network.firmware.upgrade, null) != null
+          try(network.firmware.upgrade, null) != null ||
+          try(network.firmware.downgrade, null) != null
         )
       ]
     ]
