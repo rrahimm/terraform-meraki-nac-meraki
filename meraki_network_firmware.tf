@@ -23,25 +23,25 @@ data "meraki_network_firmware_upgrades_data" "networks_firmware_data" {
 # Per-network map: {product → {short_name → id}} — resolves YAML version names to numeric IDs
 locals {
   networks_firmware_version_maps = {
-    for cfg in local.networks_firmware_upgrades_config : cfg.key => {
+    for fw_upgrade_cfg in local.networks_firmware_upgrades_config : fw_upgrade_cfg.key => {
       switch = try({
-        for v in data.meraki_network_firmware_upgrades_data.networks_firmware_data[cfg.key].products_switch_available_versions :
+        for v in data.meraki_network_firmware_upgrades_data.networks_firmware_data[fw_upgrade_cfg.key].products_switch_available_versions :
         v.short_name => v.id
       }, {})
       wireless = try({
-        for v in data.meraki_network_firmware_upgrades_data.networks_firmware_data[cfg.key].products_wireless_available_versions :
+        for v in data.meraki_network_firmware_upgrades_data.networks_firmware_data[fw_upgrade_cfg.key].products_wireless_available_versions :
         v.short_name => v.id
       }, {})
       appliance = try({
-        for v in data.meraki_network_firmware_upgrades_data.networks_firmware_data[cfg.key].products_appliance_available_versions :
+        for v in data.meraki_network_firmware_upgrades_data.networks_firmware_data[fw_upgrade_cfg.key].products_appliance_available_versions :
         v.short_name => v.id
       }, {})
       cellular_gateway = try({
-        for v in data.meraki_network_firmware_upgrades_data.networks_firmware_data[cfg.key].products_cellular_gateway_available_versions :
+        for v in data.meraki_network_firmware_upgrades_data.networks_firmware_data[fw_upgrade_cfg.key].products_cellular_gateway_available_versions :
         v.short_name => v.id
       }, {})
       switch_catalyst = try({
-        for v in data.meraki_network_firmware_upgrades_data.networks_firmware_data[cfg.key].products_switch_catalyst_available_versions :
+        for v in data.meraki_network_firmware_upgrades_data.networks_firmware_data[fw_upgrade_cfg.key].products_switch_catalyst_available_versions :
         v.short_name => v.id
       }, {})
     }
