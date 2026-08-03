@@ -102,7 +102,14 @@ locals {
           assigned_switch_ports = try(automation.assigned_switch_ports, null) == null ? null : [
             for asp in try(automation.assigned_switch_ports, []) : {
               switch_serial = meraki_device.devices[format("%s/%s/%s/%s", domain.name, organization.name, asp.network, asp.switch)].serial
-              port_ids      = asp.port_ids
+              port_ids = flatten([
+                for r in asp.port_id_ranges : [
+                  for port_id in range(r.from, r.to + 1) :
+                  try(r.slot, null) != null && try(r.module, null) != null
+                  ? format("%s_%s_%s", r.slot, r.module, port_id)
+                  : port_id
+                ]
+              ])
             }
           ]
           rules = [
