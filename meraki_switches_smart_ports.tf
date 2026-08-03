@@ -101,7 +101,7 @@ locals {
           fallback_profile_name = try(automation.fallback_profile_name, local.defaults.meraki.domains.organizations.switch_port_profiles_automations.fallback_profile_name, null)
           assigned_switch_ports = try(automation.assigned_switch_ports, null) == null ? null : [
             for asp in try(automation.assigned_switch_ports, []) : {
-              switch_serial = asp.serial
+              switch_serial = meraki_device.devices[format("%s/%s/%s/%s", domain.name, organization.name, asp.network, asp.switch)].serial
               port_ids      = asp.port_ids
             }
           ]
