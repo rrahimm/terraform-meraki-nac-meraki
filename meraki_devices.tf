@@ -264,7 +264,9 @@ resource "meraki_switch_ports" "devices_switch_ports" {
         flexible_stacking_enabled   = try(ports.data.flexible_stacking, local.defaults.meraki.domains.organizations.networks.switch.ports.flexible_stacking, null)
         dai_trusted                 = try(ports.data.dai_trusted, local.defaults.meraki.domains.organizations.networks.devices.switch.ports.dai_trusted, null)
         profile_enabled             = try(ports.data.profile.enabled, local.defaults.meraki.domains.organizations.networks.devices.switch.ports.profile.enabled, null)
-        # profile_id                  = try(ports.data.profile.id, local.defaults.meraki.domains.organizations.networks.devices.switch.ports.profile.id, null)
+        # profile_id is resolved from the profile name via the org-level switch port profiles map;
+        # profile_iname can be used as an alternative when the profile ID is not available.
+        profile_id     = try(local.organizations_switch_port_profile_ids[format("%s/%s/%s", domain.name, organization.name, ports.data.profile.name)], null)
         profile_iname  = try(ports.data.profile.iname, local.defaults.meraki.domains.organizations.networks.devices.switch.ports.profile.iname, null)
         dot3az_enabled = try(ports.data.dot3az, local.defaults.meraki.domains.organizations.networks.devices.switch.ports.dot3az, null)
       }
@@ -272,6 +274,7 @@ resource "meraki_switch_ports" "devices_switch_ports" {
   ])
   depends_on = [
     meraki_organization_adaptive_policy_settings.organizations_adaptive_policy_settings_enabled_networks,
+    meraki_switch_organization_ports_profile.organizations_switch_port_profiles,
   ]
 }
 
