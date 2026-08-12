@@ -22,6 +22,7 @@ locals {
             null,
           )
           is_organization_wide = try(profile.is_organization_wide, local.defaults.meraki.domains.organizations.switch_port_profiles.is_organization_wide, null)
+          networks_type        = try(profile.networks, null) == null ? null : "included"
           networks_values = try(profile.networks, null) == null ? null : [
             for net_name in try(profile.networks, []) : {
               id   = local.organizations_network_ids[format("%s/%s/%s", domain.name, organization.name, net_name)]
@@ -57,6 +58,7 @@ resource "meraki_switch_organization_ports_profile" "organizations_switch_port_p
   description                   = each.value.description
   network_id                    = each.value.network_id
   is_organization_wide          = each.value.is_organization_wide
+  networks_type                 = each.value.networks_type
   networks_values               = each.value.networks_values
   port_type                     = each.value.port_type
   port_vlan                     = each.value.port_vlan
