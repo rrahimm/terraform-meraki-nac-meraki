@@ -266,7 +266,6 @@ resource "meraki_switch_ports" "devices_switch_ports" {
         dai_trusted                 = try(ports.data.dai_trusted, local.defaults.meraki.domains.organizations.networks.devices.switch.ports.dai_trusted, null)
         profile_enabled             = try(ports.data.profile.enabled, local.defaults.meraki.domains.organizations.networks.devices.switch.ports.profile.enabled, null)
         profile_id                  = ports.profile_id
-        profile_iname               = try(ports.data.profile.iname, local.defaults.meraki.domains.organizations.networks.devices.switch.ports.profile.iname, null)
         dot3az_enabled              = try(ports.data.dot3az, local.defaults.meraki.domains.organizations.networks.devices.switch.ports.dot3az, null)
       }
     ]
