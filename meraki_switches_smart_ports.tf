@@ -78,16 +78,16 @@ locals {
 # ---------------------------------------------------------------------------
 
 locals {
-  organizations_smart_port_profiles_automations = flatten([
+  organizations_smart_port_automations = flatten([
     for domain in try(local.meraki.domains, []) : [
       for organization in try(domain.organizations, []) : [
-        for automation in try(organization.smart_port_profiles_automations, []) : {
+        for automation in try(organization.smart_port_automations, []) : {
           key                   = format("%s/%s/%s", domain.name, organization.name, automation.name)
           organization_id       = local.organization_ids[format("%s/%s", domain.name, organization.name)]
-          name                  = try(automation.name, local.defaults.meraki.domains.organizations.smart_port_profiles_automations.name, null)
-          description           = try(automation.description, local.defaults.meraki.domains.organizations.smart_port_profiles_automations.description, null)
+          name                  = try(automation.name, local.defaults.meraki.domains.organizations.smart_port_automations.name, null)
+          description           = try(automation.description, local.defaults.meraki.domains.organizations.smart_port_automations.description, null)
           fallback_profile_id   = try(local.organizations_smart_port_profile_ids[format("%s/%s/%s", domain.name, organization.name, automation.fallback_profile_name)], null)
-          fallback_profile_name = try(automation.fallback_profile_name, local.defaults.meraki.domains.organizations.smart_port_profiles_automations.fallback_profile_name, null)
+          fallback_profile_name = try(automation.fallback_profile_name, local.defaults.meraki.domains.organizations.smart_port_automations.fallback_profile_name, null)
           assigned_switch_ports = try(automation.assigned_switch_ports, null) == null ? null : [
             for asp in try(automation.assigned_switch_ports, []) : {
               switch_serial = meraki_device.devices[format("%s/%s/%s/%s", domain.name, organization.name, asp.network, asp.switch)].serial
@@ -120,8 +120,8 @@ locals {
   ])
 }
 
-resource "meraki_switch_organization_ports_profiles_automation" "organizations_smart_port_profiles_automations" {
-  for_each              = { for v in local.organizations_smart_port_profiles_automations : v.key => v }
+resource "meraki_switch_organization_ports_profiles_automation" "organizations_smart_port_automations" {
+  for_each              = { for v in local.organizations_smart_port_automations : v.key => v }
   organization_id       = each.value.organization_id
   name                  = each.value.name
   description           = each.value.description
