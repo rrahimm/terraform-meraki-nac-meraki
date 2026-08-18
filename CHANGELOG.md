@@ -1,4 +1,10 @@
 
+## Unreleased
+
+New Features:
+
+- Add support for SmartPorts — `meraki_switch_organization_ports_profile` and `meraki_switch_organization_ports_profiles_automation` resources (issue #2018)
+
 ## 0.11.0
 
 New Features:
