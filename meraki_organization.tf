@@ -764,9 +764,8 @@ locals {
           port_vlan            = try(profile.port_vlan, local.defaults.meraki.domains.organizations.smart_port_profiles.port_vlan, null)
           port_voice_vlan      = try(profile.port_voice_vlan, local.defaults.meraki.domains.organizations.smart_port_profiles.port_voice_vlan, null)
           port_allowed_vlans   = try(profile.port_allowed_vlans, local.defaults.meraki.domains.organizations.smart_port_profiles.port_allowed_vlans, null)
-          port_adaptive_policy_group_id = try(
-            local.organizations_adaptive_policy_group_ids[format("%s/%s/%s", domain.name, organization.name, profile.port_adaptive_policy_group_name)],
-            null,
+          port_adaptive_policy_group_id = try(profile.port_adaptive_policy_group_name, null) == null ? null : (
+            local.organizations_adaptive_policy_group_ids[format("%s/%s/%s", domain.name, organization.name, profile.port_adaptive_policy_group_name)]
           )
           port_poe_enabled           = try(profile.port_poe, local.defaults.meraki.domains.organizations.smart_port_profiles.port_poe, null)
           port_isolation_enabled     = try(profile.port_isolation, local.defaults.meraki.domains.organizations.smart_port_profiles.port_isolation, null)
