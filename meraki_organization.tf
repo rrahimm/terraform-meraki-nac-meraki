@@ -801,6 +801,9 @@ resource "meraki_switch_organization_ports_profile" "organizations_smart_port_pr
   port_storm_control_enabled    = each.value.port_storm_control_enabled
   port_dai_trusted              = each.value.port_dai_trusted
   port_peer_sgt_capable         = each.value.port_peer_sgt_capable
+  depends_on = [
+    meraki_organization_early_access_features_opt_in.organizations_early_access_features_opt_ins,
+  ]
 }
 
 locals {
